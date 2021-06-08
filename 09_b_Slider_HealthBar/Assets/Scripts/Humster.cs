@@ -1,52 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class Humster : MonoBehaviour
 {
 	[SerializeField] private float _maxHealth;
-	[SerializeField] private Slider _healthBar;
+
+	public event UnityAction<float> ChangedHealth;
 
 	private float _health;
-	private float _targetValue;
+
+	public float MaxHealth => _maxHealth;
+	public float Health => _health;
 
 	private void Awake()
 	{
-		_targetValue = _healthBar.value = _healthBar.maxValue = _health = _maxHealth;
+		_health = _maxHealth;
 	}
 
-	private void FixedUpdate()
+	private void Start()
 	{
-		_healthBar.value = Mathf.MoveTowards(_healthBar.value, _targetValue, 0.5f);
+		ChangedHealth?.Invoke(_health / _maxHealth);
 	}
 
-	public void CheckValue(float value)
+	public void AddValueToHealth(float value)
 	{
 		if ((_health + value) <= _maxHealth && (_health + value) >= 0)
 		{
-			ChangeHealth(_health + value);
+			AddHealth(value);
 			return;
 		}
 
 		if ((_health + value) > _maxHealth && _health < _maxHealth)
 		{
-			ChangeHealth(_maxHealth);
+			AddHealth(_maxHealth - _health);
 			return;
 		}
 
 		if ((_health + value) < 0 && _health > 0)
 		{
-			ChangeHealth(0f);
+			AddHealth(-_health);
 			return;
 		}
-
 	}
 
-	private void ChangeHealth(float value)
+	private void AddHealth(float value)
 	{
-		_health = value;
+		_health += value;
 
-		_targetValue = _health;
+		ChangedHealth?.Invoke(_health / _maxHealth);
 	}
 }
