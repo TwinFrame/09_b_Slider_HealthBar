@@ -8,12 +8,12 @@ public class Humster : MonoBehaviour
 {
 	[SerializeField] private float _maxHealth;
 
-	public event UnityAction<float> ChangedHealth;
-
 	private float _health;
 
 	public float MaxHealth => _maxHealth;
 	public float Health => _health;
+
+	public event UnityAction<float> ChangedHealth;
 
 	private void Awake()
 	{
@@ -33,13 +33,13 @@ public class Humster : MonoBehaviour
 			return;
 		}
 
-		if ((_health + value) > _maxHealth && _health < _maxHealth)
+		if (Mathf.Clamp(_health + value, 0, _maxHealth) == _maxHealth && _health < _maxHealth)
 		{
 			AddHealth(_maxHealth - _health);
 			return;
 		}
 
-		if ((_health + value) < 0 && _health > 0)
+		if (Mathf.Clamp(_health + value, 0, _maxHealth) == 0 && _health > 0)
 		{
 			AddHealth(-_health);
 			return;
