@@ -12,17 +12,17 @@ public class HealthBar : MonoBehaviour
 
 	private Slider _healthBar;
 	private float _targetValue;
-	private Coroutine ChangeSliderValueJob;
+	private Coroutine _ñhangeSliderValueJob;
 
 	private void OnEnable()
 	{
 		_healthBar = GetComponent<Slider>();
-		_player.ChangedHealth += SetSliderValue;
+		_player.ChangedHealth += OnSetSliderValue;
 	}
 
 	private void OnDisable()
 	{
-		_player.ChangedHealth -= SetSliderValue;
+		_player.ChangedHealth -= OnSetSliderValue;
 	}
 
 	private void Start()
@@ -30,14 +30,14 @@ public class HealthBar : MonoBehaviour
 		_healthBar.value = _healthBar.maxValue = _player.Health / _player.MaxHealth;
 	}
 
-	private void SetSliderValue(float value)
+	private void OnSetSliderValue(float value)
 	{
 		_targetValue = value;
 
-		if (ChangeSliderValueJob != null)
-			StopCoroutine(ChangeSliderValueJob);
+		if (_ñhangeSliderValueJob != null)
+			StopCoroutine(_ñhangeSliderValueJob);
 
-		ChangeSliderValueJob = StartCoroutine(ChangeSliderValue(_targetValue));
+		_ñhangeSliderValueJob = StartCoroutine(ChangeSliderValue(_targetValue));
 	}
 
 	private IEnumerator ChangeSliderValue(float targetValue)
